@@ -73,12 +73,4 @@ export class AuthService {
       throw error;
     }
   }
-
-  async getUser(request) {
-    const userId = request.user.id;
-    const user = await this.userModel.findById(userId);
-    const { password, ...userWithoutPassword } = user.toObject();
-
-    return userWithoutPassword;
-  }
 }

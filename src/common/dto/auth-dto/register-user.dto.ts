@@ -1,4 +1,10 @@
-import { IsString, IsEmail, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  MinLength,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 
 export class RegistrationDto {
   @IsString()
@@ -15,4 +21,12 @@ export class RegistrationDto {
   @IsString()
   @MinLength(6)
   password: string;
+}
+
+export class UpdateProfileDto {
+  firstName?: string;
+  lastName?: string;
+  @IsEmail({}, { message: 'Invalid email format' })
+  email?: string;
+  password?: string;
 }
