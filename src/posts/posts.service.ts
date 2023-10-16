@@ -31,7 +31,6 @@ export class PostsService {
 
   async findById(id: string): Promise<Posts> {
     const isValidId = mongoose.isValidObjectId(id);
-
     if (!isValidId) {
       throw new BadRequestException('Please enter correct id.');
     }
@@ -43,5 +42,18 @@ export class PostsService {
     }
 
     return book;
+  }
+
+  async getAllPosts(request: any, page: number, limit: number) {
+    const userId = request.user.id;
+    const skip = (page - 1) * limit;
+    return {
+      data: await this.postsModel
+        .find({ user: userId })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      page,
+    };
   }
 }

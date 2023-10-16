@@ -6,6 +6,8 @@ import {
   Post,
   Req,
   UseGuards,
+  Request,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
@@ -23,8 +25,18 @@ export class PostsController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('all')
+  async getAllPost(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Req() req,
+  ) {
+    return this.postService.getAllPosts(req, page, limit);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async getBook(
+  async getPost(
     @Param('id')
     id: string,
   ): Promise<Posts> {
