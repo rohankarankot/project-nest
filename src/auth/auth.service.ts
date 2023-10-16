@@ -35,6 +35,7 @@ export class AuthService {
       const user = new this.userModel({
         ...registrationDto,
         password: hashedPassword,
+        deactivated: false,
       });
       const token = this.jwtService.sign({
         id: user._id,
@@ -58,7 +59,13 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('Invalid username or password');
       }
-
+      if (user.deactivated) {
+        await this.userModel.findByIdAndUpdate(
+          user._id,
+          { deactivated: false },
+          { new: true },
+        );
+      }
       const isPasswordMatch = await bcrypt.compare(password, user.password);
       if (!isPasswordMatch) {
         throw new UnauthorizedException('Invalid username or password');

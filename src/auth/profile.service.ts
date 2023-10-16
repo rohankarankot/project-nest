@@ -1,14 +1,9 @@
-import {
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../common/schema/user.schema';
-import { JwtService } from '@nestjs/jwt';
-import {
-  UpdateProfileDto,
-} from 'src/common/dto/auth-dto/register-user.dto';
+import { UpdateProfileDto } from 'src/common/dto/auth-dto/register-user.dto';
 import {
   BadRequestException,
   NotAcceptableException,
@@ -18,7 +13,6 @@ import {
 export class ProfileService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
-    private readonly jwtService: JwtService,
   ) {}
 
   async getUser(request) {
@@ -77,6 +71,25 @@ export class ProfileService {
       return userWithoutPassword;
     } catch (error) {
       console.error('Error updating user profile:', error);
+      throw error;
+    }
+  }
+
+  async deactivateProfile(user: User) {
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        user._id,
+        { deactivated: true },
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        throw new BadRequestException('User update failed');
+      } else {
+        return { msg: 'Deactivated your Profile' };
+      }
+    } catch (error) {
+      console.error('Error deactivating user profile:', error);
       throw error;
     }
   }

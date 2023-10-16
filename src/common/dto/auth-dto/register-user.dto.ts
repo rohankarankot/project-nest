@@ -21,6 +21,9 @@ export class RegistrationDto {
   @IsString()
   @MinLength(6)
   password: string;
+
+  @IsBoolean()
+  deactivated: boolean = false;
 }
 
 export class UpdateProfileDto {

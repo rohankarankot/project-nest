@@ -11,6 +11,9 @@ export class User extends Document {
   firstName: string;
 
   @Prop({ required: true })
+  deactivated: boolean;
+
+  @Prop({ required: true })
   lastName: string;
 
   @Prop({ required: true, unique: true })

@@ -52,4 +52,9 @@ export class AuthController {
   ) {
     return this.profileService.updateProfile(updateProfile, req.user);
   }
+  @UseGuards(JwtAuthGuard)
+  @Put('deactivate')
+  async deactivateProfile(@Req() req) {
+    return this.profileService.deactivateProfile(req.user);
+  }
 }
