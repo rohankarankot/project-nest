@@ -8,6 +8,7 @@ import {
   UseGuards,
   Request,
   Query,
+  Put,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
@@ -22,6 +23,16 @@ export class PostsController {
   @Post('add')
   async addNewPost(@Body() postsDTO: PostsDTO, @Req() req): Promise<Posts> {
     return this.postService.addNewPost(postsDTO, req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('update/:id')
+  async updatePost(
+    @Param('id') postId: string,
+    @Body() updatePostDto,
+    @Request() req,
+  ) {
+    return this.postService.updatePost(postId, updatePostDto, req.user.id);
   }
 
   @UseGuards(JwtAuthGuard)

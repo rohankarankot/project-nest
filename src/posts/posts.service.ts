@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,7 +25,7 @@ export class PostsService {
 
       return post;
     } catch (error) {
-      console.error('Error registering user:', error);
+      console.error('Error adding post:', error);
       throw error;
     }
   }
@@ -35,13 +36,13 @@ export class PostsService {
       throw new BadRequestException('Please enter correct id.');
     }
 
-    const book = await this.postsModel.findById(id);
+    const post = await this.postsModel.findById(id);
 
-    if (!book) {
-      throw new NotFoundException('Book not found.');
+    if (!post) {
+      throw new NotFoundException('post not found.');
     }
 
-    return book;
+    return post;
   }
 
   async getAllPosts(request: any, page: number, limit: number) {
@@ -55,5 +56,35 @@ export class PostsService {
         .exec(),
       page,
     };
+  }
+
+  async updatePost(id: string, updatePostDto, userId: string): Promise<any> {
+    const existingPost = await this.postsModel.findById(id).exec();
+
+    if (!existingPost) {
+      throw new NotFoundException('Post not found');
+    }
+
+    if (existingPost.user.toString() !== userId) {
+      throw new NotAcceptableException('You are not the owner of this post');
+    }
+
+    // Determine which fields are updated
+    const updatedFields = {};
+    if (updatePostDto.caption !== undefined) {
+      updatedFields['caption'] = updatePostDto.caption;
+    }
+    if (updatePostDto.image !== undefined) {
+      updatedFields['image'] = updatePostDto.image;
+    }
+    if (updatePostDto.category !== undefined) {
+      updatedFields['category'] = updatePostDto.category;
+    }
+
+    // Update only the changed fields
+    const updatedPost = await this.postsModel
+      .findByIdAndUpdate(id, updatedFields, { new: true })
+      .exec();
+    return updatedPost;
   }
 }
