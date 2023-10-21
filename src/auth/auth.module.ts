@@ -9,7 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from '../common/jwt.strategy';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
-import { ProfileService } from './profile.service';
+import { UserService } from 'src/user/user.service';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { ProfileService } from './profile.service';
     JwtStrategy,
     JwtAuthGuard,
     AuthService,
-    ProfileService,
+    UserService,
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,

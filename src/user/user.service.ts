@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common/exceptions';
 
 @Injectable({})
-export class ProfileService {
+export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
