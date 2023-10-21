@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsEnum,
   IsEmpty,
+  IsArray,
 } from 'class-validator';
 import { Category } from 'src/common/schema/posts.schema';
 import { User } from 'src/common/schema/user.schema';
@@ -13,7 +14,6 @@ export class PostsDTO {
   @MinLength(3)
   caption: string;
 
-  @IsNotEmpty()
   image: string[];
 
   @IsNotEmpty()

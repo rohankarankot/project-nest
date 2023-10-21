@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentsController } from 'src/comments/comments.controller';
 import { Comment, CommentModel } from 'src/common/schema/post-comment.schema';
+var ImageKit = require('imagekit');
 
 @Module({
   imports: [
@@ -29,6 +30,20 @@ import { Comment, CommentModel } from 'src/common/schema/post-comment.schema';
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentModel }]),
   ],
   controllers: [PostsController, CommentsController],
-  providers: [PostsService, AuthService, CommentsService],
+  providers: [
+    PostsService,
+    AuthService,
+    CommentsService,
+    {
+      provide: 'ImageKit',
+      useFactory: () => {
+        return new ImageKit({
+          publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
+          privateKey: process.env.IMAGE_KIT_PRIVATE_KEY,
+          urlEndpoint: process.env.IMAGE_KIT_URL_ENDPOINT,
+        });
+      },
+    },
+  ],
 })
 export class PostsModule {}

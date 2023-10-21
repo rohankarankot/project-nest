@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -9,18 +10,33 @@ import mongoose, { Model } from 'mongoose';
 import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
 import { Posts } from 'src/common/schema/posts.schema';
 import { User } from 'src/common/schema/user.schema';
+import ImageKit from 'imagekit';
+import { uploadImageToImageKit } from 'src/utils/file-upload';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectModel(Posts.name) private readonly postsModel: Model<Posts>,
+    @Inject('ImageKit') private readonly imagekit: ImageKit,
   ) {}
 
-  async addNewPost(postsDTO: PostsDTO, user: User) {
+  async addNewPost(postsDTO: PostsDTO, user: User, files) {
     try {
-      const data = Object.assign(postsDTO, { user: user._id });
-      const post = new this.postsModel(data);
+      const fileUploadPromises = files.map(async (file) => {
+        return uploadImageToImageKit(this.imagekit, file);
+      });
 
+      const fileUrls = await Promise.all(fileUploadPromises);
+
+      postsDTO.image = fileUrls;
+
+      const data = Object.assign(
+        postsDTO,
+        { user: user._id },
+        { image: fileUrls },
+      );
+
+      const post = new this.postsModel(data);
       await post.save();
 
       return post;

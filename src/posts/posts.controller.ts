@@ -9,11 +9,16 @@ import {
   Request,
   Query,
   Put,
+  UseInterceptors,
+  UploadedFiles,
+  ParseFilePipe,
+  MaxFileSizeValidator,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Posts } from 'src/common/schema/posts.schema';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('post')
 export class PostsController {
@@ -21,8 +26,18 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addNewPost(@Body() postsDTO: PostsDTO, @Req() req): Promise<Posts> {
-    return this.postService.addNewPost(postsDTO, req.user);
+  @UseInterceptors(FilesInterceptor('image'))
+  async addNewPost(
+    @Body() postsDTO: PostsDTO,
+    @Req() req,
+    @UploadedFiles(
+      new ParseFilePipe({
+        // validators: [new MaxFileSizeValidator({ maxSize: 20000 })],
+      }),
+    )
+    files: Express.Multer.File[],
+  ): Promise<Posts> {
+    return await this.postService.addNewPost(postsDTO, req.user, files);
   }
 
   @UseGuards(JwtAuthGuard)
