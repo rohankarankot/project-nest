@@ -8,6 +8,7 @@ import {
   Request,
   Query,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -70,6 +71,27 @@ export class CommentsController {
       return { message: 'Comment deleted', deletedComment };
     } catch (error) {
       console.error('Error deleting comment:', error);
+      throw error;
+    }
+  }
+
+  //edit comment
+  @Patch('editComment/:id')
+  async editComment(@Param('id') commentId: string, @Body() updateCommentDto) {
+    try {
+      const updatedComment = await this.commentsService.editComment(
+        commentId,
+        updateCommentDto,
+      );
+
+      if (!updatedComment) {
+        return { message: 'Comment not found or already deleted' };
+      }
+
+      return { message: 'Comment updated', updatedComment };
+    } catch (error) {
+      // Handle error, e.g., return an error response
+      console.error('Error editing comment:', error);
       throw error;
     }
   }

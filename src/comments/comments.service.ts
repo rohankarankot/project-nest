@@ -74,4 +74,23 @@ export class CommentsService {
       throw error;
     }
   }
+
+  // edit comment
+  async editComment(commentId: string, updateCommentDto) {
+    try {
+      const existingComment = await this.commentModel.findById(commentId);
+
+      if (!existingComment) {
+        return null;
+      }
+
+      existingComment.comment = updateCommentDto.comment;
+
+      const updatedComment = await existingComment.save();
+
+      return updatedComment;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
