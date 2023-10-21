@@ -58,4 +58,20 @@ export class CommentsService {
       throw error;
     }
   }
+
+  // delete comment
+  async deleteComment(commentId: string) {
+    try {
+      const deletedComment =
+        await this.commentModel.findByIdAndDelete(commentId);
+
+      if (!deletedComment) {
+        return null;
+      }
+
+      return deletedComment;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

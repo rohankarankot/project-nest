@@ -7,11 +7,11 @@ import {
   UseGuards,
   Request,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CommentDto } from 'src/common/dto/posts-dto/comment.dto';
-import { PostsService } from 'src/posts/posts.service';
 
 @Controller('post/comment')
 export class CommentsController {
@@ -52,6 +52,24 @@ export class CommentsController {
       return comments;
     } catch (error) {
       console.error('Error fetching comments:', error);
+      throw error;
+    }
+  }
+
+  //delete comment
+  @Delete('deleteComment/:id')
+  async deleteComment(@Param('id') commentId: string) {
+    try {
+      const deletedComment =
+        await this.commentsService.deleteComment(commentId);
+
+      if (!deletedComment) {
+        return { message: 'Comment not found or already deleted' };
+      }
+
+      return { message: 'Comment deleted', deletedComment };
+    } catch (error) {
+      console.error('Error deleting comment:', error);
       throw error;
     }
   }
