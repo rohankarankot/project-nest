@@ -7,6 +7,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { User, UserModel } from 'src/common/schema/user.schema';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CommentsService } from 'src/comments/comments.service';
+import { CommentsController } from 'src/comments/comments.controller';
+import { Comment, CommentModel } from 'src/common/schema/post-comment.schema';
 
 @Module({
   imports: [
@@ -23,8 +26,9 @@ import { ConfigService } from '@nestjs/config';
     }),
     MongooseModule.forFeature([{ name: Posts.name, schema: PostsModel }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserModel }]),
+    MongooseModule.forFeature([{ name: Comment.name, schema: CommentModel }]),
   ],
-  controllers: [PostsController],
-  providers: [PostsService, AuthService],
+  controllers: [PostsController, CommentsController],
+  providers: [PostsService, AuthService, CommentsService],
 })
 export class PostsModule {}

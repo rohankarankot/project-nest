@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { User } from './user.schema';
 
 export type PostDocument = Posts & Document;
@@ -25,6 +25,9 @@ export class Posts extends Document {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comment' }], default: [] })
+  comments: Types.ObjectId[];
 }
 
 export const PostsModel = SchemaFactory.createForClass(Posts);
