@@ -18,10 +18,25 @@ export class Posts extends Document {
   caption: string;
 
   @Prop({ required: true })
+  description: string;
+
+  @Prop({ required: true })
   image: string[];
 
-  @Prop()
+  @Prop({ required: true })
   category: Category;
+
+  @Prop({ required: true })
+  mobile: string;
+
+  @Prop({ required: true })
+  address: string;
+
+  @Prop({ required: true })
+  state: string;
+
+  @Prop({ required: true })
+  city: string;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
