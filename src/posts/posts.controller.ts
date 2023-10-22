@@ -19,6 +19,7 @@ import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Posts } from 'src/common/schema/posts.schema';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Delete } from '@nestjs/common/decorators';
 
 @Controller('post')
 export class PostsController {
@@ -59,7 +60,7 @@ export class PostsController {
   ) {
     return this.postService.getAllPosts(req, page, limit);
   }
-
+  //find post by id
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getPost(
@@ -67,5 +68,15 @@ export class PostsController {
     id: string,
   ): Promise<Posts> {
     return this.postService.findById(id);
+  }
+
+  // delete post by id
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
+  async deletePost(
+    @Param('id')
+    id: string,
+  ): Promise<{ msg: string }> {
+    return this.postService.deletePost(id);
   }
 }

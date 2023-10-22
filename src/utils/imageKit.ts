@@ -18,3 +18,9 @@ export async function uploadImageToImageKit(imagekit, file) {
     throw error;
   }
 }
+export async function deleteImageFromImageKit(imagekit, id) {
+  await imagekit.deleteFile(id, (error, result) => {
+    if (error) console.log('Error deleting file===>', error);
+    else console.log(result);
+  });
+}

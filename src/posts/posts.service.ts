@@ -11,7 +11,10 @@ import { PostsDTO } from 'src/common/dto/posts-dto/post.dto';
 import { Posts } from 'src/common/schema/posts.schema';
 import { User } from 'src/common/schema/user.schema';
 import ImageKit from 'imagekit';
-import { uploadImageToImageKit } from 'src/utils/file-upload';
+import {
+  deleteImageFromImageKit,
+  uploadImageToImageKit,
+} from 'src/utils/imageKit';
 
 @Injectable()
 export class PostsService {
@@ -102,5 +105,27 @@ export class PostsService {
       .findByIdAndUpdate(id, updatedFields, { new: true })
       .exec();
     return updatedPost;
+  }
+
+  async deletePost(id: string): Promise<{ msg: string }> {
+    const isValidId = mongoose.isValidObjectId(id);
+    if (!isValidId) {
+      throw new BadRequestException('Please enter correct id.');
+    }
+
+    const post = await this.postsModel.findById(id);
+
+    if (!post) {
+      throw new NotFoundException('post not found.');
+    } else {
+      const fileUploadPromises = post.image.map(async (file: any) => {
+        return await deleteImageFromImageKit(this.imagekit, file.fileId);
+      });
+
+      await Promise.all(fileUploadPromises);
+
+      await this.postsModel.findByIdAndDelete(id).exec();
+      return { msg: 'post deleted sucessfully' };
+    }
   }
 }
