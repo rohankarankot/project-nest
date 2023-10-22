@@ -17,6 +17,11 @@ export class CommentsService {
   // add a comment on post
   async addComment(postId: string, commentDto: CommentDto, userId: string) {
     try {
+      const post = await this.postModel.findById(postId);
+
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
       const newComment = new this.commentModel({
         comment: commentDto.comment,
         post: postId,
@@ -24,11 +29,7 @@ export class CommentsService {
       });
 
       const comment = await newComment.save();
-      const post = await this.postModel.findById(postId);
 
-      if (!post) {
-        throw new NotFoundException('Post not found');
-      }
       post.comments.push(comment._id);
       await post.save();
       return comment;
