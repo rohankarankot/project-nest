@@ -60,6 +60,15 @@ export class PostsController {
   ) {
     return this.postService.getAllPosts(req, page, limit);
   }
+
+  @Get('city/all')
+  async getAllPostByCity(
+    @Query('page') page: number,
+    @Query('city') city: string,
+    @Query('limit') limit: number,
+  ) {
+    return this.postService.getAllPostByCity(page, limit, city);
+  }
   //find post by id
   @UseGuards(JwtAuthGuard)
   @Get(':id')

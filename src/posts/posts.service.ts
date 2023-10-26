@@ -128,4 +128,12 @@ export class PostsService {
       return { msg: 'post deleted sucessfully' };
     }
   }
+
+  async getAllPostByCity(page: number, limit: number, city: string) {
+    const skip = (page - 1) * limit;
+    return {
+      data: await this.postsModel.find({ city }).skip(skip).limit(limit).exec(),
+      page,
+    };
+  }
 }
