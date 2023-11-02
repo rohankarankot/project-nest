@@ -15,7 +15,7 @@ export class CommentsService {
   ) {}
 
   // add a comment on post
-  async addComment(postId: string, commentDto: CommentDto, userId: string) {
+  async addComment(postId: string, commentDto: CommentDto, user) {
     try {
       const post = await this.postModel.findById(postId);
 
@@ -25,7 +25,8 @@ export class CommentsService {
       const newComment = new this.commentModel({
         comment: commentDto.comment,
         post: postId,
-        user: userId,
+        user: user.userId,
+        userName: user.firstName,
       });
 
       const comment = await newComment.save();
@@ -38,26 +39,16 @@ export class CommentsService {
     }
   }
 
-  //get all comments of post
-  async getCommentsByIds(commentIds: string[], page: number, limit: number) {
-    try {
-      const skip = (page - 1) * limit; // Calculate the number of documents to skip
-      const commentsQuery = this.commentModel.find({
-        _id: { $in: commentIds },
-      });
-
-      const totalCommentsQuery = commentsQuery.clone(); // Create a clone of the query
-      const totalComments = await totalCommentsQuery.countDocuments();
-
-      const comments = await commentsQuery.skip(skip).limit(limit).exec();
-
-      const hasMoreComments = totalComments > skip + comments.length;
-
-      return { comments, hasMoreComments };
-    } catch (error) {
-      this.logger.error('Error fetching comments by IDs:', error);
-      throw error;
-    }
+  async getComments(postId: any, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    return {
+      data: await this.commentModel
+        .find({ post: postId })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      page,
+    };
   }
 
   // delete comment

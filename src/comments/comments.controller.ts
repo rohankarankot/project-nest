@@ -9,6 +9,7 @@ import {
   Query,
   Delete,
   Patch,
+  Get,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
@@ -26,27 +27,27 @@ export class CommentsController {
     @Body() commentDto: CommentDto,
     @Request() req,
   ) {
-    const userId = req.user.id;
+    const user = req.user;
 
     const comment = await this.commentsService.addComment(
       postId,
       commentDto,
-      userId,
+      user,
     );
 
     return comment;
   }
 
   //fetch all commets of post
-  @Post('fetch-comments')
-  async getCommentsByIds(
-    @Body() request: { comments: string[] },
+  @Get('fetch-comments/:id')
+  async getComments(
+    @Param('id') postId: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ) {
     try {
-      const comments = await this.commentsService.getCommentsByIds(
-        request.comments,
+      const comments = await this.commentsService.getComments(
+        postId,
         page,
         limit,
       );
