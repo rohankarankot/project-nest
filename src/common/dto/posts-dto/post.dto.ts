@@ -36,6 +36,9 @@ export class PostsDTO {
   @IsString()
   city: string;
 
+  @IsString()
+  userName: string = '';
+
   @IsEmpty({ message: 'You cannot pass user id' })
   readonly user: User;
 }

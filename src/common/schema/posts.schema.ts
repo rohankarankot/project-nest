@@ -38,6 +38,9 @@ export class Posts extends Document {
   @Prop({ required: true })
   city: string;
 
+  @Prop()
+  userName: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   user: User;
 

@@ -32,11 +32,13 @@ export class PostsService {
       const fileUrls = await Promise.all(fileUploadPromises);
 
       postsDTO.image = fileUrls;
+      postsDTO.userName = user.firstName;
 
       const data = Object.assign(
         postsDTO,
         { user: user._id },
         { image: fileUrls },
+        { userName: user.firstName },
       );
 
       const post = new this.postsModel(data);
