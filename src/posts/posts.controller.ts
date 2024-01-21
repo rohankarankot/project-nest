@@ -70,7 +70,6 @@ export class PostsController {
     return this.postService.getAllPostByCity(page, limit, city);
   }
   //find post by id
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async getPost(
     @Param('id')

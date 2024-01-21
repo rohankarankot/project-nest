@@ -1,5 +1,7 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotAcceptableException,
@@ -131,10 +133,27 @@ export class PostsService {
     }
   }
 
-  async getAllPostByCity(page: number, limit: number, city: string) {
+  async getAllPostByCity(page: number = 1, limit: number = 10, city: string) {
+    // Check if the 'city' parameter is provided
+    if (!city) {
+      throw new HttpException(
+        'City parameter is required.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // Calculate the number of documents to skip based on the current page and limit
     const skip = (page - 1) * limit;
+
+    // Query the database to find posts matching the specified city, skip the calculated number, and limit the result
+    const result = await this.postsModel
+      .find({ city })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    // Return the result as an object with data and page properties
     return {
-      data: await this.postsModel.find({ city }).skip(skip).limit(limit).exec(),
+      data: result,
       page,
     };
   }
