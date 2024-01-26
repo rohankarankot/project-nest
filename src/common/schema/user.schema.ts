@@ -20,9 +20,7 @@ export class User extends Document {
   email: string;
 
   @Prop({ required: true })
-  password: string; // Note: Passwords should be hashed and not stored in plain text in production
-
-  // You can add more fields and methods here as needed
+  password: string;
 }
 
 export const UserModel = SchemaFactory.createForClass(User);
