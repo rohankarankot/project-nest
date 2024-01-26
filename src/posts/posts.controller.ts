@@ -69,6 +69,17 @@ export class PostsController {
   ) {
     return this.postService.getAllPostByCity(page, limit, city);
   }
+
+  //find post by search
+  @Get('search')
+  async searchPost(
+    @Query('page') page: number,
+    @Query('query') query: string,
+    @Query('limit') limit: number,
+  ) {
+    return this.postService.searchPost(query, page, limit);
+  }
+
   //find post by id
   @Get(':id')
   async getPost(

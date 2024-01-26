@@ -157,4 +157,36 @@ export class PostsService {
       page,
     };
   }
+
+  async searchPost(query: string, page: number = 1, limit: number = 10) {
+    try {
+      query = query.trim();
+
+      const filter = {
+        $text: {
+          $search: query,
+        },
+      };
+
+      const projection = {
+        score: {
+          $meta: 'textScore',
+        },
+        __v: 0,
+      };
+
+      const results = await this.postsModel
+        .find(filter, projection)
+        .sort({
+          score: -1,
+        })
+        .skip((page - 1) * limit)
+        .limit(limit);
+
+      return results;
+    } catch (error) {
+      console.error('Error during search:', error.message);
+      throw new Error('An error occurred during search.');
+    }
+  }
 }
