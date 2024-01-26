@@ -20,8 +20,10 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Posts } from 'src/common/schema/posts.schema';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Delete } from '@nestjs/common/decorators';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('post')
+@ApiTags('PostsApi')
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
 
