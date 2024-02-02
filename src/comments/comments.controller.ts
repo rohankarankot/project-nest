@@ -14,8 +14,10 @@ import {
 import { CommentsService } from './comments.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CommentDto } from 'src/common/dto/posts-dto/comment.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('post/comment')
+@ApiTags('Comments Api')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 

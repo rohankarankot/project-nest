@@ -1,3 +1,4 @@
+import { ApiExtraModels } from '@nestjs/swagger';
 import {
   IsString,
   IsEmail,
@@ -5,7 +6,9 @@ import {
   IsBoolean,
   IsOptional,
 } from 'class-validator';
+import { LoginDto } from './login-user.dto';
 
+@ApiExtraModels(LoginDto)
 export class RegistrationDto {
   @IsString()
   @MinLength(3)
