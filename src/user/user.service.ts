@@ -86,7 +86,7 @@ export class UserService {
       if (!updatedUser) {
         throw new BadRequestException('User update failed');
       } else {
-        return { msg: 'Deactivated your Profile' };
+        return { message: 'Profile deactivated Successfully' };
       }
     } catch (error) {
       console.error('Error deactivating user profile:', error);

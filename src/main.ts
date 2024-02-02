@@ -8,9 +8,9 @@ async function bootstrap() {
 
   // Swagger setup
   const options = new DocumentBuilder()
-    .setTitle('Your API')
-    .setDescription('API Documentation')
-    .setVersion('1')
+    .setTitle('Project Nest')
+    .setDescription('Documentation is in progress')
+    .setVersion('v0.1')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
